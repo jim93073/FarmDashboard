@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+  <META HTTP-EQUIV="EXPIRES" CONTENT="0">
+  <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="no-cache, no-store, must-revalidate">
+  <META HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+
+  <title>IoTtalk Video Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+  <link href="{{ url_for('static',filename ='css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static',filename ='css/style.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static',filename ='css/font-awesome.min.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static',filename ='favicon.ico') }}" type="image/x-icon">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>  
+</head>
+
+
+
+<body style="background-color: #e9e9e9;" onload="refreshImg()">
+
+
+  <div class="container-fluid" style="margin-top: 30px;">
+    <div class="row">
+      <div class="col-sm-5">
+        <div class="row">
+          <!-- Image -->
+          <div class="col-sm-12">
+            <a href="#" id="pop">
+              <picture>
+                <div class="" style="position:fixed;left: 5%;top:5%">                  
+                    <img src="{{ url_for('static',filename ='mushroom_0203/2021-05-18.jpg') }}" alt="" id="imageresource"
+                    class="img-rounded, ImgPosition" style='width:450px;height:450px'  />
+                  <div class="row " style="padding-left: 23px;padding-right: 9px;margin-top: 10px;">
+                    <form action="/post_date" method="GET">
+                      <div class="col-xs-5">
+                        <input type="date" name = "start-time" id="start-time" class="form-control">
+                      </div>
+                      <div class="col-xs-5">
+                        <input type="date" name = "end-time" id="end-time" class="form-control">
+                      </div>
+                      <div class="col-xs-12 " style="margin: auto;margin-top: 20px;">
+                        <input type="submit" />
+                      </div>                      
+                    </form>
+                  </div>
+                </div>
+              </picture>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-7 text-center">
+        <h1>Environment Information</h1>
+        <div class="col-md-12">
+          <canvas id="temp" width="600px" height="350px" style="margin-bottom: 50px;"></canvas>
+        </div>
+        <div class="col-md-12">
+          <canvas id="CO2" width="600px" height="350px" style="margin-bottom: 50px;"></canvas>
+        </div>
+        <div class="col-md-12">
+          <canvas id="hum" width="600px" height="350px" style="margin-bottom: 50px;"></canvas>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <iframe id="retframe" name="retframe" frameborder="0" style="display:none;"></iframe>
+</body>
+
+<script>
+  function refreshImg() {
+  }
+
+</script>
+
+<!-- Draw chart -->
+<script>
+
+  var mushroom_img = {{ mushroom_img_name| safe }};
+  var labels_temp = {{ labels_temp| safe }};
+  var labels_hum = {{ labels_hum| safe }};
+  var labels_CO2 = {{ labels_CO2| safe }};
+  var data_temp = {
+    labels: labels_temp,
+    datasets: [{
+      label: 'Temperature',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: {{ data_temp| safe }}  ,
+  borderWidth: 1,
+    pointRadius: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+        borderColor: 'rgba(255, 0, 0, 0.8)',
+          label: 'Temperature',
+      }]
+    };
+  var data_hum = {
+    labels: labels_hum,
+    datasets: [{
+      label: 'Humidity',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: {{ data_hum| safe }}  ,
+  borderWidth: 1,
+    pointRadius: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+          label: 'Humidity',
+      }]
+    };
+  var data_CO2 = {
+    labels: labels_CO2,
+    datasets: [{
+      label: 'CO2',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: {{ data_CO2| safe }}  ,
+  borderWidth: 1,
+    pointRadius: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+        borderColor: 'rgba(0, 139, 84, 1)',
+          label: 'CO2',
+      }]
+    };
+
+  var ctx_hum = document.getElementById("hum").getContext("2d"),
+    HUM = new Chart(ctx_hum, {
+      type: 'line',
+      data: data_hum,
+      options: {
+        tooltips: {
+          intersect: false,
+          axis: 'x'
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      },
+    });
+
+  var ctx_temp = document.getElementById("temp").getContext("2d"),
+    TEMP = new Chart(ctx_temp, {
+      type: 'line',
+      data: data_temp,
+      options: {
+        tooltips: {
+          intersect: false,
+          axis: 'x'
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+  var ctx_CO2 = document.getElementById("CO2").getContext("2d"),
+    CO2 = new Chart(ctx_CO2, {
+      type: 'line',
+      data: data_CO2,
+      options: {
+        hover: { mode: null },
+        // events: ['click'],
+        tooltips: {
+          // enabled: false,
+          intersect: false,
+          axis: 'x'
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+  var is_playChart = false;    
+  var value = "2021-05-10";
+
+  Chart.plugins.register({
+    afterDatasetsDraw: function (chart) {
+
+      if (chart.tooltip._active && is_playChart == true) {
+
+        var activePoint = chart.tooltip._active[0],
+          ctx = chart.ctx,
+          y_axis = chart.scales['y-axis-0'],
+          x = idx,
+          topY = y_axis.top,
+          bottomY = y_axis.bottom;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x, topY);
+        ctx.lineTo(x, bottomY);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#778899';
+        ctx.stroke();
+        ctx.restore();
+        hover_date = x;
+        idx += 0.1;
+        chart.update();        
+      }
+
+      else if (chart.tooltip._active && chart.tooltip._active.length) {
+        var activePoint = chart.tooltip._active[0],
+          ctx = chart.ctx,
+          y_axis = chart.scales['y-axis-0'],
+          x = activePoint.tooltipPosition().x,
+          topY = y_axis.top,
+          bottomY = y_axis.bottom;
+        // draw line
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x, topY);
+        ctx.lineTo(x, bottomY);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#778899';
+        ctx.stroke();
+        ctx.restore();
+        hover_date = x;
+        // value = chart.data.datasets[activePoint._datasetIndex].data[activePoint._index];
+        value = chart.data.labels[activePoint._index];        
+      }
+    }
+  });
+
+
+  console.log(mushroom_img)
+
+  setInterval(function () {
+    document.getElementById("imageresource").src = "https://panettone.iottalk.tw/~jim93073/IR_img_day/IR-mushroom_img".replace("mushroom_img", value + ".jpg");    
+    console.log("hover date"+hover_date);
+    console.log("value"+value);
+  }, 1000);
+
+  function playChart() {
+    console.log("press play");
+    is_playChart = true;
+  }
+  function stopChart() {
+    console.log("press stop");
+    is_playChart = false;
+  }
+
+</script>
+
+</html>
