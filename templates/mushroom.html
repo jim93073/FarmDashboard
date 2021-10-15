@@ -35,9 +35,8 @@
           <div class="col-sm-12">
             <a href="#" id="pop">
               <picture>
-                <div class="" style="position:fixed;left: 5%;top:5%">                  
-                    <img src="{{ url_for('static',filename ='mushroom_0203/2021-05-18.jpg') }}" alt="" id="imageresource"
-                    class="img-rounded, ImgPosition" style='width:450px;height:450px'  />
+                <div class="" style="position:fixed;left: 5%;top:5%">                                      
+                    <img src="https://panettone.iottalk.tw/~jim93073/IR_img_day/IR-2021-05-18.jpg" alt="" id="imageresource"  class="img-rounded, ImgPosition" style='width:450px;height:450px'  />
                   <div class="row " style="padding-left: 23px;padding-right: 9px;margin-top: 10px;">
                     <form action="/post_date" method="GET">
                       <div class="col-xs-5">
@@ -85,7 +84,6 @@
 <!-- Draw chart -->
 <script>
 
-  var mushroom_img = {{ mushroom_img_name| safe }};
   var labels_temp = {{ labels_temp| safe }};
   var labels_hum = {{ labels_hum| safe }};
   var labels_CO2 = {{ labels_CO2| safe }};
@@ -243,8 +241,6 @@
     }
   });
 
-
-  console.log(mushroom_img)
 
   setInterval(function () {
     document.getElementById("imageresource").src = "https://panettone.iottalk.tw/~jim93073/IR_img_day/IR-mushroom_img".replace("mushroom_img", value + ".jpg");    
