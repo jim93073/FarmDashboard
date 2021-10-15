@@ -56,8 +56,7 @@ def index():
     labels_CO2, data_CO2 = get_CO2()
     
 
-    return flast_render_template('mushroom.html',
-    mushroom_img_name=json.dumps(mushroom_img_name),
+    return flast_render_template('mushroom.html',    
     labels_temp = json.dumps(labels_temp),
     labels_hum = json.dumps(labels_hum),
     labels_CO2 = json.dumps(labels_CO2),
